@@ -1,4 +1,4 @@
-﻿<#
+ <#
 .SYNOPSIS
     Create Language Pack packages in ConfigMgr.
 
@@ -31,17 +31,21 @@
     Specify the targeted Windows build number, e.g. 16299. Used as the Version property of the Language Pack package object.
 
 .EXAMPLE
-    .\New-CMLanguagePackPackage.ps1 -SiteServer "CM01" -ISORootPath "F:\" -PackageSourcePath "\\CM01\CMSource\OSD\LanguagePacks\Windows10" -LanguagePacks "da-DK", "sv-SE", "nb-NO" -LanguagePackArchitecture "x64" -PackageName "Windows 10" -WindowsVersion "1709" -WindowsBuildnumber "16299"
+    .\New-CMLanguagePackPackage.ps1 -SiteServer "BCFDLCMSAPPP01" -ISORootPath "F:\" -PackageSourcePath "\\brunswick.com\ent\Apps\SCCM\OSD\OperatingSystems\WIN10\LanguagePacks" -LanguagePacks "de-DE","en-GB","es-ES","es-MX","fr-CA","fr-FR","hu-HU","it-IT","ja-JP","ko-KR","nl-NL","pt-BR","zh-CN","zh-TW" -LanguagePackArchitecture "x64" -PackageName "Windows 10" -WindowsVersion "1803" -WindowsBuildnumber "17134"
 
 .NOTES
     FileName:    New-CMLanguagePackPackage.ps1
     Author:      Nickolaj Andersen
     Contact:     @NickolajA
     Created:     2017-10-30
-    Updated:     2017-10-30
+    Updated:     2018-05-07
     
     Version history:
     1.0.0 - (2017-10-30) Script created
+    1.0.1 - (2018-05-07) Script Updated [roger.truss@brunswick.com] to include
+        A description based off the variables and msft naming for lps. (Start at line 163.)
+            https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/available-language-packs-for-windows
+        Creates and move the LPs to the $WindowsVersion specific package folder (Lines 223-235)
 #>
 [CmdletBinding(SupportsShouldProcess=$true)]
 param(
@@ -156,6 +160,46 @@ Process {
                 if (-not(Test-Path -Path $LanguagePackSubFolder)) {
                     Write-Verbose -Message "Creating folder: $($LanguagePackSubFolder)"
                     New-Item -Path $LanguagePackSubFolder -ItemType Directory -Force -ErrorAction Stop -Verbose:$false | Out-Null
+					switch -CaseSensitive ($LanguagePack) {
+                        "ar-SA" {$LPDescription = "Arabic (Saudi Arabia) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "bg-BG" {$LPDescription = "Bulgarian (Bulgaria) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "zh-CN" {$LPDescription = "Chinese (PRC) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "zh-TW" {$LPDescription = "Chinese (Taiwan) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "hr-HR" {$LPDescription = "Croatian (Croatia) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "cs-CZ" {$LPDescription = "Czech (Czech Republic) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "da-DK" {$LPDescription = "Danish (Denmark) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "nl-NL" {$LPDescription = "Dutch (Netherlands) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "en-US" {$LPDescription = "English (United States) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "en-GB" {$LPDescription = "English (United Kingdom) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "et-EE" {$LPDescription = "Estonian (Estonia) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "fi-FI" {$LPDescription = "Finnish (Finland) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "fr-CA" {$LPDescription = "French (Canada) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "fr-FR" {$LPDescription = "French (France) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "de-DE" {$LPDescription = "German (Germany) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "el-GR" {$LPDescription = "Greek (Greece) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "he-IL" {$LPDescription = "Hebrew (Israel) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "hu-HU" {$LPDescription = "Hungarian (Hungary) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "it-IT" {$LPDescription = "Italian (Italy) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "ja-JP" {$LPDescription = "Japanese (Japan) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "ko-KR" {$LPDescription = "Korean (Korea) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "lv-LV" {$LPDescription = "Latvian (Latvia) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "lt-LT" {$LPDescription = "Lithuanian (Lithuania) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "nb-NO" {$LPDescription = "Norwegian, Bokmål (Norway) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "pl-PL" {$LPDescription = "Polish (Poland) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "pt-BR" {$LPDescription = "Portuguese (Brazil) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "pt-PT" {$LPDescription = "Portuguese (Portugal) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "ro-RO" {$LPDescription = "Romanian (Romania) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "ru-RU" {$LPDescription = "Russian (Russia) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "sr-Latn-RS" {$LPDescription = "Serbian (Latin, Serbia) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "sk-SK" {$LPDescription = "Slovak (Slovakia) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "sl-SI" {$LPDescription = "Slovenian (Slovenia) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "es-MX" {$LPDescription = "Spanish (Mexico) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "es-ES" {$LPDescription = "Spanish (Spain) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "sv-SE" {$LPDescription = "Swedish (Sweden) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "th-TH" {$LPDescription = "Thai (Thailand) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "tr-TR" {$LPDescription = "Turkish (Turkey) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                        "uk-UA" {$LPDescription = "Ukrainian (Ukraine) Language Pack for $PackageName $LanguagePackArchitecture (Release $WindowsVersion Build $WindowsBuildnumber)"}
+                    } 
                 }
 
             }
@@ -176,17 +220,26 @@ Process {
                 # Set location to Configuration Manager drive
                 Set-Location -Path $SiteDrive -ErrorAction Stop -Verbose:$false
 
+                $NewPath = $SiteCode + ":" + "\Package\OSD" 
+                if ((Test-Path -Path $NewPath) -eq $false) {New-Item -Path $NewPath}
+                $NewLPPath = $NewPath + "\Language Packs"
+                if ((Test-Path -Path $NewLPPath) -eq $false) {New-Item -Path $NewLPPath}
+                $NewLPVerPath = $NewLPPath + "\" + $WindowsVersion
+                if ((Test-Path -Path ($NewLPVerPath)) -eq $false) {New-Item -Path $NewLPVerPath}
+                Set-Location -Path $NewLPVerPath
+
                 # Create Language Pack package
                 $LanguagePackPackageName = -join@("Language Pack - ", $PackageName, " ", $WindowsVersion, " ", $Architecture)
                 Write-Verbose -Message "Creating Language Pack package: $($LanguagePackPackageName)"
-                $LanguagePackPackage = New-CMPackage -Name $LanguagePackPackageName -Language $LanguagePack -Version $WindowsBuildnumber -Path $LanguagePackSubFolder -ErrorAction Stop -Verbose:$false
+                $LanguagePackPackage = New-CMPackage -Name $LanguagePackPackageName -Description $LPDescription -Language $LanguagePack -Version $WindowsBuildnumber -Path $LanguagePackSubFolder -ErrorAction Stop -Verbose:$false
+                Move-CMObject -FolderPath $NewLPVerPath -ObjectID $LanguagePackPackage.PackageID
                 
-                # Set location to previous location
-                Set-Location -Path $CurrentLocation
+                # Set location to script home
+                Set-Location -Path $PSScriptRoot
             }
             catch [System.Exception] {
                 Write-Warning -Message "Unable to create Language Pack package. Error message: $($_.Exception.Message)" ; break
             }
         }
     }
-}
+} 
